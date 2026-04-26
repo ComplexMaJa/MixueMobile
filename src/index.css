@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply h-full w-full m-0 p-0;
+    /* Optional: background color for desktop area outside the mobile view */
+    background-color: #e5e7eb; /* Tailwind gray-200 */
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Mobile Container Rule */
+  #root {
+    @apply relative mx-auto h-full w-full bg-white shadow-2xl;
+    max-width: 480px;
+    /* Hide scrollbar for a cleaner mobile app feel */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+  }
+  
+  #root::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
