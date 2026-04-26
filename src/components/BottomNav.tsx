@@ -32,14 +32,37 @@ export const BottomNav: React.FC = () => {
             <button
               key={item.id}
               onClick={() => navigate(item.path)}
-              className="flex flex-col items-center justify-center w-full h-full space-y-1 focus:outline-none"
+              className="relative flex flex-col items-center justify-center w-full h-full focus:outline-none overflow-hidden"
             >
-              <Icon 
-                size={24} 
-                className={isActive ? 'text-mixue-red' : 'text-mixue-gray'} 
-                strokeWidth={isActive ? 2.5 : 2}
+              {/* Top animated indicator bar */}
+              <div 
+                className={`absolute top-0 w-8 h-1 bg-mixue-red rounded-b-md transition-all duration-300 ease-out ${
+                  isActive ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+                }`}
               />
-              <span className={`text-[10px] ${isActive ? 'text-mixue-red font-semibold' : 'text-mixue-gray'}`}>
+
+              <div className={`relative flex items-center justify-center transition-all duration-300 ${
+                isActive ? '-translate-y-1 mt-1' : 'translate-y-0 mt-0'
+              }`}>
+                {/* Active background blob */}
+                <div 
+                  className={`absolute w-10 h-10 bg-mixue-red/10 rounded-full transition-all duration-500 ease-out ${
+                    isActive ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+                  }`} 
+                />
+                
+                <Icon 
+                  size={24} 
+                  className={`relative z-10 transition-all duration-300 ${
+                    isActive ? 'text-mixue-red scale-110' : 'text-mixue-gray scale-100 hover:text-mixue-red/70'
+                  }`} 
+                  strokeWidth={isActive ? 2.5 : 2}
+                />
+              </div>
+              
+              <span className={`text-[10px] transition-all duration-300 ${
+                isActive ? 'text-mixue-red font-semibold opacity-100 translate-y-0' : 'text-mixue-gray font-medium opacity-80 translate-y-0.5'
+              }`}>
                 {item.label}
               </span>
             </button>

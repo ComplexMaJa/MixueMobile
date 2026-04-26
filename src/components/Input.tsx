@@ -5,10 +5,12 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  onRightIconClick?: () => void;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, leftIcon, type = 'text', className = '', ...props }, ref) => {
+  ({ label, error, leftIcon, rightIcon, onRightIconClick, type = 'text', className = '', ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
     
@@ -34,10 +36,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               error ? 'border-mixue-red focus:ring-mixue-red' : 'border-gray-200 focus:ring-mixue-dark'
             } rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors ${
               leftIcon ? 'pl-10' : ''
-            } ${isPassword ? 'pr-10' : ''} ${className}`}
+            } ${(isPassword || rightIcon) ? 'pr-10' : ''} ${className}`}
             {...props}
           />
-          {isPassword && (
+          {isPassword ? (
             <button
               type="button"
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-mixue-gray hover:text-mixue-dark"
@@ -45,7 +47,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
-          )}
+          ) : rightIcon ? (
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-mixue-gray hover:text-mixue-dark"
+              onClick={onRightIconClick}
+            >
+              {rightIcon}
+            </button>
+          ) : null}
         </div>
         {error && <p className="mt-1 text-xs text-mixue-red">{error}</p>}
       </div>

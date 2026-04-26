@@ -1,12 +1,20 @@
-import React from 'react';
-import { Bell, MapPin, Search } from 'lucide-react';
+import React, { useState } from 'react';
+import { Bell, MapPin, Search, X } from 'lucide-react';
 import { Input } from '../components/Input';
 import { Typography } from '../components/Typography';
-import { categories, popularProducts, recommendedProducts } from '../data/mockData';
+import { categories, popularProducts, recommendedProducts, mockProducts } from '../data/mockData';
 import { useNavigate } from 'react-router-dom';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const searchResults = searchQuery.trim()
+    ? mockProducts.filter(p => 
+        p.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) || 
+        p.description.toLowerCase().includes(searchQuery.trim().toLowerCase())
+      )
+    : [];
 
   return (
     <div className="flex flex-col h-full bg-white relative pb-20">
@@ -30,18 +38,65 @@ export const Home: React.FC = () => {
           </button>
         </div>
         
-        <div onClick={() => navigate('/menu')}>
+        <div>
           <Input 
             placeholder="Search menu, drinks..." 
             leftIcon={<Search size={20} />} 
-            readOnly
-            className="bg-gray-50 border-transparent pointer-events-none"
+            rightIcon={searchQuery ? <X size={18} /> : undefined}
+            onRightIconClick={() => setSearchQuery('')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-gray-50 border-transparent transition-all focus:bg-white focus:border-mixue-red focus:shadow-sm"
           />
         </div>
       </div>
 
       <div className="overflow-y-auto">
-        {/* Promo Banner */}
+        {searchQuery.trim() ? (
+          <div className="px-4 mt-4 mb-6">
+            <Typography variant="h2" className="mb-4">Search Results</Typography>
+            {searchResults.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4">
+                {searchResults.map(product => (
+                  <div 
+                    key={product.id} 
+                    className="bg-white rounded-2xl shadow-card overflow-hidden flex flex-col cursor-pointer"
+                    onClick={() => navigate(`/product/${product.id}`)}
+                  >
+                    <div className="h-32 bg-gray-100 relative">
+                      {product.badges && product.badges.length > 0 && (
+                        <div className="absolute top-2 left-2 z-10">
+                          <span className="bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">
+                            {product.badges[0]}
+                          </span>
+                        </div>
+                      )}
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="p-3 flex-1 flex flex-col">
+                      <Typography variant="body1" className="font-semibold text-xs leading-tight mb-1 line-clamp-2">
+                        {product.name}
+                      </Typography>
+                      <div className="flex justify-between items-end mt-auto pt-2">
+                        <Typography variant="body1" className="font-bold text-sm">Rp {product.price.toLocaleString('id-ID')}</Typography>
+                        <button className="w-6 h-6 bg-mixue-red rounded-full flex items-center justify-center text-white text-lg leading-none pb-0.5">
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10 text-center">
+                <span className="text-4xl mb-3">🔍</span>
+                <Typography variant="body1" className="text-mixue-gray">No products found for "{searchQuery}"</Typography>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* Promo Banner */}
         <div className="px-4 mt-4">
           <div className="bg-mixue-red rounded-2xl p-5 relative overflow-hidden h-36 flex items-center">
             <div className="z-10 w-2/3">
@@ -148,6 +203,8 @@ export const Home: React.FC = () => {
             ))}
           </div>
         </div>
+          </>
+        )}
       </div>
     </div>
   );
