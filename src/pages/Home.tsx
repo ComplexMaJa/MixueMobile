@@ -7,9 +7,24 @@ import { useNavigate } from 'react-router-dom';
 import { useAnimationStore } from '../components/CartAnimationOverlay';
 import { useCartStore } from '../store/cartStore';
 
+import Promo1 from '../assets/Promo1.png';
+import Promo2 from '../assets/Promo2.png';
+import Promo3 from '../assets/Promo3.png';
+import Promo4 from '../assets/Promo4.png';
+
+const promoImages = [Promo1, Promo2, Promo3, Promo4];
+
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPromo, setCurrentPromo] = useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentPromo(prev => (prev + 1) % promoImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
   const searchResults = searchQuery.trim()
     ? mockProducts.filter(p => 
@@ -125,25 +140,27 @@ export const Home: React.FC = () => {
         ) : (
           <>
             {/* Promo Banner */}
-        <div className="px-4 mt-4">
-          <div className="bg-mixue-red rounded-2xl p-5 relative overflow-hidden h-36 flex items-center">
-            <div className="z-10 w-2/3">
-              <span className="bg-white text-mixue-red text-xs font-bold px-2 py-0.5 rounded uppercase mb-2 inline-block">MIXUE</span>
-              <Typography variant="h1" className="text-white text-2xl leading-tight mb-2">HOT DAY<br/>COOL YOU!</Typography>
-              <span className="bg-yellow-400 text-mixue-dark text-xs font-bold px-2 py-1 rounded">DISCOUNT UP TO 20%</span>
+            <div className="px-4 mt-4">
+              <div className="rounded-2xl relative overflow-hidden h-36 flex items-center shadow-sm w-full">
+                {promoImages.map((img, idx) => (
+                  <img 
+                    key={idx}
+                    src={img} 
+                    alt={`Promo ${idx + 1}`} 
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${idx === currentPromo ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} 
+                  />
+                ))}
+              </div>
+              <div className="flex justify-center mt-3 space-x-1.5">
+                {promoImages.map((_, idx) => (
+                  <div 
+                    key={idx} 
+                    onClick={() => setCurrentPromo(idx)}
+                    className={`h-1.5 rounded-full cursor-pointer transition-all duration-300 ${idx === currentPromo ? 'w-4 bg-mixue-red' : 'w-1.5 bg-gray-300'}`}
+                  ></div>
+                ))}
+              </div>
             </div>
-            {/* Mascot Placeholder */}
-            <div className="absolute -right-4 bottom-0 w-32 h-32 bg-white/20 rounded-full flex items-center justify-center">
-              <span className="text-6xl">⛄</span>
-            </div>
-          </div>
-          <div className="flex justify-center mt-3 space-x-1.5">
-            <div className="w-4 h-1.5 bg-mixue-red rounded-full"></div>
-            <div className="w-1.5 h-1.5 bg-gray-300 rounded-full"></div>
-            <div className="w-1.5 h-1.5 bg-gray-300 rounded-full"></div>
-            <div className="w-1.5 h-1.5 bg-gray-300 rounded-full"></div>
-          </div>
-        </div>
 
         {/* Categories */}
         <div className="mt-6 pl-4 flex space-x-6 overflow-x-auto hide-scrollbar pb-2">

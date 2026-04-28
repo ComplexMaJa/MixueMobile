@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Circle } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
+import { useOrderStore } from '../store/orderStore';
 import { Button } from '../components/Button';
 import { Typography } from '../components/Typography';
 import { Input } from '../components/Input';
 
 export const Payment: React.FC = () => {
   const navigate = useNavigate();
-  const { getTotal, clearCart } = useCartStore();
+  const { items, getTotal, clearCart } = useCartStore();
+  const addOrder = useOrderStore(state => state.addOrder);
   const [paymentMethod, setPaymentMethod] = useState('cash');
 
   const paymentMethods = [
@@ -21,7 +23,8 @@ export const Payment: React.FC = () => {
   ];
 
   const handlePayNow = () => {
-    // Simulate order placement
+    // Save order
+    addOrder(items, getTotal());
     clearCart();
     navigate('/success');
   };

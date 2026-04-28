@@ -15,6 +15,7 @@ import { Payment } from './pages/Payment';
 import { OrderSuccess } from './pages/OrderSuccess';
 import { OrderTracking } from './pages/OrderTracking';
 import { Profile } from './pages/Profile';
+import { Orders } from './pages/Orders';
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           {/* Add favorites, orders here if needed, linking to dummy pages for now */}
           <Route path="/favorites" element={<div className="p-4"><p>Favorites</p></div>} />
-          <Route path="/orders" element={<div className="p-4"><p>Orders</p></div>} />
+          <Route path="/orders" element={<Orders />} />
         </Route>
 
         {/* Full screen routes (no bottom nav) */}
