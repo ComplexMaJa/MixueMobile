@@ -7,6 +7,7 @@ export interface Order {
   date: string;
   total: number;
   products: { name: string; qty: number; image: string }[];
+  createdAt: number;
 }
 
 interface OrderState {
@@ -29,7 +30,8 @@ export const useOrderStore = create<OrderState>((set) => ({
         name: item.productName,
         qty: item.quantity,
         image: item.productImage
-      }))
+      })),
+      createdAt: Date.now()
     };
     return { orders: [newOrder, ...state.orders] };
   }),

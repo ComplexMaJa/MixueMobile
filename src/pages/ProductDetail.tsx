@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart } from 'lucide-react';
 import { mockProducts, type VariantOption } from '../data/mockData';
 import { useCartStore } from '../store/cartStore';
+import { useFavoriteStore } from '../store/favoriteStore';
 import { Button } from '../components/Button';
 import { Typography } from '../components/Typography';
 import { Chip } from '../components/Chip';
@@ -11,6 +12,7 @@ export const ProductDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const addItem = useCartStore(state => state.addItem);
+  const { toggleFavorite, isFavorite } = useFavoriteStore();
   
   const product = mockProducts.find(p => p.id === id) || mockProducts[0];
   
@@ -54,8 +56,11 @@ export const ProductDetail: React.FC = () => {
           >
             <ArrowLeft size={20} />
           </button>
-          <button className="w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-mixue-red">
-            <Heart size={20} />
+          <button 
+            className="w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-mixue-red active:scale-90 transition-transform"
+            onClick={() => toggleFavorite(product.id)}
+          >
+            <Heart size={20} fill={isFavorite(product.id) ? "currentColor" : "none"} />
           </button>
         </div>
       </div>

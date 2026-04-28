@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Typography } from '../components/Typography';
 import { Clock, CheckCircle2, ChevronRight, ShoppingBag } from 'lucide-react';
 import { useOrderStore } from '../store/orderStore';
 
 export const Orders: React.FC = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'ongoing' | 'history'>('ongoing');
   const orders = useOrderStore(state => state.orders);
 
@@ -83,7 +85,10 @@ export const Orders: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 px-4 py-3 flex justify-between items-center cursor-pointer active:bg-gray-100">
+                <div 
+                  className="bg-gray-50 px-4 py-3 flex justify-between items-center cursor-pointer active:bg-gray-100"
+                  onClick={() => navigate(`/tracking/${order.id}`)}
+                >
                   <span className="text-sm font-medium text-mixue-red">View Details</span>
                   <ChevronRight size={16} className="text-mixue-red" />
                 </div>
