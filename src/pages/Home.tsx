@@ -4,6 +4,8 @@ import { Input } from '../components/Input';
 import { Typography } from '../components/Typography';
 import { categories, popularProducts, recommendedProducts, mockProducts } from '../data/mockData';
 import { useNavigate } from 'react-router-dom';
+import { useAnimationStore } from '../components/CartAnimationOverlay';
+import { useCartStore } from '../store/cartStore';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -15,6 +17,29 @@ export const Home: React.FC = () => {
         p.description.toLowerCase().includes(searchQuery.trim().toLowerCase())
       )
     : [];
+
+  const triggerAnimation = useAnimationStore(state => state.trigger);
+  const addItem = useCartStore(state => state.addItem);
+
+  const handleQuickAdd = (product: typeof mockProducts[0], e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Calculate starting point
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2;
+    
+    triggerAnimation({ startX, startY, image: product.image });
+    
+    const defaultVariants: Record<string, any> = {};
+    if (product.variants) {
+      product.variants.forEach(group => {
+        defaultVariants[group.name] = group.options[0];
+      });
+    }
+    
+    addItem(product, defaultVariants, 1);
+  };
 
   return (
     <div className="flex flex-col h-full bg-white relative pb-20">
@@ -79,7 +104,10 @@ export const Home: React.FC = () => {
                       </Typography>
                       <div className="flex justify-between items-end mt-auto pt-2">
                         <Typography variant="body1" className="font-bold text-sm">Rp {product.price.toLocaleString('id-ID')}</Typography>
-                        <button className="w-6 h-6 bg-mixue-red rounded-full flex items-center justify-center text-white text-lg leading-none pb-0.5">
+                        <button 
+                          className="w-6 h-6 bg-mixue-red rounded-full flex items-center justify-center text-white text-lg leading-none pb-0.5"
+                          onClick={(e) => handleQuickAdd(product, e)}
+                        >
                           +
                         </button>
                       </div>
@@ -194,7 +222,10 @@ export const Home: React.FC = () => {
                   </Typography>
                   <div className="flex justify-between items-end mt-auto pt-2">
                     <Typography variant="body1" className="font-bold text-sm">Rp {product.price.toLocaleString('id-ID')}</Typography>
-                    <button className="w-6 h-6 bg-mixue-red rounded-full flex items-center justify-center text-white text-lg leading-none pb-0.5">
+                    <button 
+                      className="w-6 h-6 bg-mixue-red rounded-full flex items-center justify-center text-white text-lg leading-none pb-0.5"
+                      onClick={(e) => handleQuickAdd(product, e)}
+                    >
                       +
                     </button>
                   </div>

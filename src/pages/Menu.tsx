@@ -4,6 +4,8 @@ import { ArrowLeft, Search } from 'lucide-react';
 import { categories, mockProducts } from '../data/mockData';
 import { Typography } from '../components/Typography';
 import { Chip } from '../components/Chip';
+import { useAnimationStore } from '../components/CartAnimationOverlay';
+import { useCartStore } from '../store/cartStore';
 
 export const Menu: React.FC = () => {
   const navigate = useNavigate();
@@ -13,11 +15,29 @@ export const Menu: React.FC = () => {
     ? mockProducts 
     : mockProducts.filter(p => p.category === activeCategory);
 
+  const triggerAnimation = useAnimationStore(state => state.trigger);
+  const addItem = useCartStore(state => state.addItem);
+
   const handleQuickAdd = (product: typeof mockProducts[0], e: React.MouseEvent) => {
     e.stopPropagation();
-    // If product has variants, navigate to detail page to choose.
-    // Otherwise, add directly. For simplicity in simulation, we'll navigate to detail page.
-    navigate(`/product/${product.id}`);
+    
+    // Calculate starting point (the center of the button that was clicked)
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2;
+    
+    // Trigger flying animation
+    triggerAnimation({ startX, startY, image: product.image });
+    
+    // Add to cart with default variants
+    const defaultVariants: Record<string, any> = {};
+    if (product.variants) {
+      product.variants.forEach(group => {
+        defaultVariants[group.name] = group.options[0];
+      });
+    }
+    
+    addItem(product, defaultVariants, 1);
   };
 
   return (

@@ -9,6 +9,10 @@ import LogoBig from '../assets/LogoBig.png';
 export const Login: React.FC = () => {
   const navigate = useNavigate();
 
+  const handleSignUp = () => {
+    navigate('/signup');
+  };
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     navigate('/home');
@@ -76,7 +80,7 @@ export const Login: React.FC = () => {
         
         <div className="mt-auto pt-6 text-center text-[15px] pb-4">
           <span className="text-gray-500">Don't have an account? </span>
-          <button type="button" className="text-mixue-red font-medium">Sign Up</button>
+          <button type="button" onClick={handleSignUp} className="text-mixue-red font-medium">Sign Up</button>
         </div>
       </form>
     </div>

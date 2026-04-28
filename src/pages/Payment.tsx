@@ -12,12 +12,12 @@ export const Payment: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState('cash');
 
   const paymentMethods = [
-    { id: 'cash', name: 'Cash on Delivery', icon: '💵' },
-    { id: 'ovo', name: 'OVO', icon: '🟣' },
-    { id: 'gopay', name: 'GoPay', icon: '🔵' },
-    { id: 'dana', name: 'DANA', icon: '🟠' },
-    { id: 'shopeepay', name: 'ShopeePay', icon: '🔴' },
-    { id: 'card', name: 'Credit / Debit Card', icon: '💳' },
+    { id: 'cash', name: 'Cash on Delivery', icon: 'https://cdn-icons-png.flaticon.com/512/95/95986.png' },
+    { id: 'ovo', name: 'OVO', icon: 'https://static.vecteezy.com/system/resources/previews/028/766/360/non_2x/ovo-ewallet-payment-icon-symbol-free-png.png' },
+    { id: 'gopay', name: 'GoPay', icon: 'https://static.vecteezy.com/system/resources/previews/028/766/371/non_2x/gopay-payment-icon-symbol-free-png.png' },
+    { id: 'dana', name: 'DANA', icon: 'https://static.vecteezy.com/system/resources/previews/028/766/359/non_2x/dana-payment-icon-symbol-free-png.png' },
+    { id: 'shopeepay', name: 'ShopeePay', icon: 'https://play-lh.googleusercontent.com/fxPXbJL2IPQUYhWO4dQw_kd_GlMJzbzQSgghjaNuDNMz0HSt98HdsTDzeMMl9Yn37oq5=w240-h480-rw' },
+    { id: 'card', name: 'Credit / Debit Card', icon: 'https://cdn-icons-png.freepik.com/512/60/60378.png' },
   ];
 
   const handlePayNow = () => {
@@ -43,13 +43,17 @@ export const Payment: React.FC = () => {
           <Typography variant="h3" className="mb-3 text-sm text-mixue-dark font-semibold">Payment Method</Typography>
           <div className="bg-white rounded-2xl shadow-card overflow-hidden">
             {paymentMethods.map((method, index) => (
-              <div 
+              <div
                 key={method.id}
                 className={`flex items-center p-4 cursor-pointer ${index !== paymentMethods.length - 1 ? 'border-b border-gray-100' : ''}`}
                 onClick={() => setPaymentMethod(method.id)}
               >
-                <div className="w-6 h-6 flex items-center justify-center mr-3 text-lg">
-                  {method.icon}
+                <div className="w-8 h-8 flex items-center justify-center mr-3 shrink-0">
+                  {method.icon ? (
+                    <img src={method.icon} alt={method.name} className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="w-full h-full rounded-md border border-gray-200 bg-gray-50"></div>
+                  )}
                 </div>
                 <Typography variant="body1" className="font-medium text-sm flex-1">{method.name}</Typography>
                 {paymentMethod === method.id ? (
