@@ -4,9 +4,9 @@ import { Button } from '../components/Button';
 import { Typography } from '../components/Typography';
 
 
-import Onboarding1 from '../assets/Onboarding1.PNG';
+import Onboarding1 from '../assets/Onboarding1.png';
 import Onboarding2 from '../assets/Onboarding2.png';
-import Onboarding3 from '../assets/Onboarding3.PNG';
+import Onboarding3 from '../assets/Onboarding3.png';
 
 const slides = [
   {
