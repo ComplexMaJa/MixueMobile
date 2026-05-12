@@ -17,6 +17,7 @@ export const ProductDetail: React.FC = () => {
   const product = mockProducts.find(p => p.id === id) || mockProducts[0];
   
   const [quantity, setQuantity] = useState(1);
+  const [note, setNote] = useState('');
   const [selectedVariants, setSelectedVariants] = useState<Record<string, VariantOption>>(() => {
     const initial: Record<string, VariantOption> = {};
     product.variants?.forEach(group => {
@@ -38,7 +39,7 @@ export const ProductDetail: React.FC = () => {
   const currentTotalPrice = (product.price + currentExtraPrice) * quantity;
 
   const handleAddToCart = () => {
-    addItem(product, selectedVariants, quantity);
+    addItem(product, selectedVariants, quantity, note.trim() || undefined);
     navigate('/cart');
   };
 
@@ -108,6 +109,17 @@ export const ProductDetail: React.FC = () => {
             </div>
           </div>
         ))}
+
+        {/* Custom Notes */}
+        <div className="p-4 border-b border-gray-100">
+          <Typography variant="h3" className="mb-3">Special Instructions</Typography>
+          <textarea
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mixue-red focus:ring-1 focus:ring-mixue-red transition-all resize-none h-20"
+            placeholder="E.g., less ice, extra sugar, etc."
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
+        </div>
       </div>
 
       {/* Sticky Bottom Action */}

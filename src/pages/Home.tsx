@@ -18,17 +18,24 @@ export const Home: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPromo, setCurrentPromo] = useState(0);
+  const [showNotif, setShowNotif] = useState(false);
 
   React.useEffect(() => {
+    // Auth check
+    if (localStorage.getItem('isAuthenticated') !== 'true') {
+      navigate('/auth/login');
+      return;
+    }
+
     const timer = setInterval(() => {
       setCurrentPromo(prev => (prev + 1) % promoImages.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [navigate]);
 
   const searchResults = searchQuery.trim()
-    ? mockProducts.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) || 
+    ? mockProducts.filter(p =>
+        p.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
         p.description.toLowerCase().includes(searchQuery.trim().toLowerCase())
       )
     : [];
@@ -38,21 +45,21 @@ export const Home: React.FC = () => {
 
   const handleQuickAdd = (product: typeof mockProducts[0], e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     // Calculate starting point
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const startX = rect.left + rect.width / 2;
     const startY = rect.top + rect.height / 2;
-    
+
     triggerAnimation({ startX, startY, image: product.image });
-    
+
     const defaultVariants: Record<string, any> = {};
     if (product.variants) {
       product.variants.forEach(group => {
         defaultVariants[group.name] = group.options[0];
       });
     }
-    
+
     addItem(product, defaultVariants, 1);
   };
 
@@ -72,16 +79,37 @@ export const Home: React.FC = () => {
               </Typography>
             </div>
           </div>
-          <button className="relative p-2">
+          <button className="relative p-2" onClick={() => setShowNotif(true)}>
             <Bell size={24} className="text-mixue-dark" />
             <span className="absolute top-1 right-2 w-2 h-2 bg-mixue-red rounded-full border border-white"></span>
           </button>
         </div>
-        
+
+        {/* Notification Toast */}
+        {showNotif && (
+          <div className="absolute top-16 right-4 bg-white rounded-xl shadow-lg border border-gray-100 py-3 pl-4 pr-2 z-50 flex items-center animate-fade-in w-[260px]">
+            <div className="flex-1">
+              <Typography variant="body1" className="font-bold text-sm text-mixue-dark">Bumi was here :3</Typography>
+              <Typography variant="caption" className="text-[10px] text-mixue-gray">Just now</Typography>
+            </div>
+            <img 
+              src="https://assets.stickerswiki.app/s/cindypack2/535bd968.thumb.webp" 
+              alt="Bumi" 
+              className="w-14 h-14 object-contain ml-2" 
+            />
+            <button 
+              onClick={() => setShowNotif(false)} 
+              className="text-gray-400 hover:text-gray-600 self-start -mt-2 ml-1"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
         <div>
-          <Input 
-            placeholder="Search menu, drinks..." 
-            leftIcon={<Search size={20} />} 
+          <Input
+            placeholder="Search menu, drinks..."
+            leftIcon={<Search size={20} />}
             rightIcon={searchQuery ? <X size={18} /> : undefined}
             onRightIconClick={() => setSearchQuery('')}
             value={searchQuery}
@@ -98,8 +126,8 @@ export const Home: React.FC = () => {
             {searchResults.length > 0 ? (
               <div className="grid grid-cols-2 gap-4">
                 {searchResults.map(product => (
-                  <div 
-                    key={product.id} 
+                  <div
+                    key={product.id}
                     className="bg-white rounded-2xl shadow-card overflow-hidden flex flex-col cursor-pointer"
                     onClick={() => navigate(`/product/${product.id}`)}
                   >
@@ -119,7 +147,7 @@ export const Home: React.FC = () => {
                       </Typography>
                       <div className="flex justify-between items-end mt-auto pt-2">
                         <Typography variant="body1" className="font-bold text-sm">Rp {product.price.toLocaleString('id-ID')}</Typography>
-                        <button 
+                        <button
                           className="w-6 h-6 bg-mixue-red rounded-full flex items-center justify-center text-white text-lg leading-none pb-0.5"
                           onClick={(e) => handleQuickAdd(product, e)}
                         >
@@ -143,18 +171,18 @@ export const Home: React.FC = () => {
             <div className="px-4 mt-4">
               <div className="rounded-2xl relative overflow-hidden h-36 flex items-center shadow-sm w-full">
                 {promoImages.map((img, idx) => (
-                  <img 
+                  <img
                     key={idx}
-                    src={img} 
-                    alt={`Promo ${idx + 1}`} 
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${idx === currentPromo ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} 
+                    src={img}
+                    alt={`Promo ${idx + 1}`}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${idx === currentPromo ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                   />
                 ))}
               </div>
               <div className="flex justify-center mt-3 space-x-1.5">
                 {promoImages.map((_, idx) => (
-                  <div 
-                    key={idx} 
+                  <div
+                    key={idx}
                     onClick={() => setCurrentPromo(idx)}
                     className={`h-1.5 rounded-full cursor-pointer transition-all duration-300 ${idx === currentPromo ? 'w-4 bg-mixue-red' : 'w-1.5 bg-gray-300'}`}
                   ></div>
@@ -165,8 +193,8 @@ export const Home: React.FC = () => {
         {/* Categories */}
         <div className="mt-6 pl-4 flex space-x-6 overflow-x-auto hide-scrollbar pb-2">
           {categories.slice(1).map(category => (
-            <div 
-              key={category.id} 
+            <div
+              key={category.id}
               className="flex flex-col items-center flex-shrink-0 cursor-pointer"
               onClick={() => navigate('/menu')}
             >
@@ -189,8 +217,8 @@ export const Home: React.FC = () => {
           </div>
           <div className="pl-4 flex space-x-4 overflow-x-auto hide-scrollbar pb-4">
             {popularProducts.map(product => (
-              <div 
-                key={product.id} 
+              <div
+                key={product.id}
                 className="w-36 flex-shrink-0 bg-white rounded-2xl shadow-card p-3 cursor-pointer"
                 onClick={() => navigate(`/product/${product.id}`)}
               >
@@ -218,8 +246,8 @@ export const Home: React.FC = () => {
           <Typography variant="h2" className="mb-4">Recommended for You</Typography>
           <div className="grid grid-cols-2 gap-4">
             {recommendedProducts.map(product => (
-              <div 
-                key={product.id} 
+              <div
+                key={product.id}
                 className="bg-white rounded-2xl shadow-card overflow-hidden flex flex-col cursor-pointer"
                 onClick={() => navigate(`/product/${product.id}`)}
               >
@@ -239,7 +267,7 @@ export const Home: React.FC = () => {
                   </Typography>
                   <div className="flex justify-between items-end mt-auto pt-2">
                     <Typography variant="body1" className="font-bold text-sm">Rp {product.price.toLocaleString('id-ID')}</Typography>
-                    <button 
+                    <button
                       className="w-6 h-6 bg-mixue-red rounded-full flex items-center justify-center text-white text-lg leading-none pb-0.5"
                       onClick={(e) => handleQuickAdd(product, e)}
                     >

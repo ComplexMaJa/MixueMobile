@@ -1,12 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, Edit3 } from 'lucide-react';
+import { ArrowLeft, Trash2, Edit3, Edit2 } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { Button } from '../components/Button';
 import { Typography } from '../components/Typography';
+import { Chip } from '../components/Chip';
+import { mockProducts } from '../data/mockData';
 export const Cart: React.FC = () => {
   const navigate = useNavigate();
-  const { items, removeItem, updateQuantity, getSubtotal, getDeliveryFee, getTotal } = useCartStore();
+  const { items, removeItem, updateQuantity, getSubtotal, getDeliveryFee, getTotal, updateItem } = useCartStore();
 
   const handleCheckout = () => {
     if (items.length > 0) {
@@ -22,7 +24,9 @@ export const Cart: React.FC = () => {
           <ArrowLeft size={24} className="text-mixue-dark" />
         </button>
         <Typography variant="h2">My Cart</Typography>
-        <button className="text-mixue-red text-sm font-semibold p-1">Edit</button>
+        <button className="text-mixue-red p-1">
+          <Edit2 size={20} />
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto pb-24">
@@ -37,7 +41,9 @@ export const Cart: React.FC = () => {
           <>
             {/* Cart Items */}
             <div className="p-4 space-y-4">
-              {items.map(item => (
+              {items.map(item => {
+                const product = mockProducts.find(p => p.id === item.productId);
+                return (
                 <div key={item.id} className="bg-white rounded-2xl p-4 shadow-card flex gap-3">
                   <div className="w-16 h-20 bg-gray-100 rounded-xl overflow-hidden shrink-0">
                     <img src={item.productImage} alt={item.productName} className="w-full h-full object-cover" />
@@ -53,9 +59,39 @@ export const Cart: React.FC = () => {
                       </button>
                     </div>
                     
-                    <Typography variant="caption" className="text-[10px] mb-2 line-clamp-1">
-                      {Object.values(item.selectedVariants).map(v => v.name).join(', ')}
-                    </Typography>
+                    {/* Inline Variant & Note Editing */}
+                    <div className="mb-3 mt-1">
+                      {product?.variants?.map(group => (
+                        <div key={group.name} className="mb-2">
+                          <Typography variant="caption" className="text-[10px] text-mixue-gray block mb-1">{group.name}</Typography>
+                          <div className="flex flex-wrap gap-1">
+                            {group.options.map(option => (
+                              <Chip
+                                key={option.id}
+                                active={item.selectedVariants[group.name]?.id === option.id}
+                                onClick={() => {
+                                  const newVariants = { ...item.selectedVariants, [group.name]: option };
+                                  updateItem(item.id, newVariants, item.note);
+                                }}
+                                className="!py-0.5 !px-2 !text-[10px]"
+                              >
+                                {option.name}
+                              </Chip>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          value={item.note || ''}
+                          onChange={(e) => updateItem(item.id, item.selectedVariants, e.target.value)}
+                          placeholder="Add note (e.g. less ice)"
+                          className="w-full text-[11px] p-1.5 bg-gray-50 border border-gray-200 rounded-lg text-mixue-dark focus:outline-none focus:border-mixue-red transition-colors placeholder:text-gray-400"
+                        />
+                      </div>
+                    </div>
                     
                     <div className="flex justify-between items-end mt-auto">
                       <div className="flex items-center border border-gray-200 rounded-full h-7 w-20">
@@ -75,19 +111,7 @@ export const Cart: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Note Input */}
-            <div className="px-4 mb-4">
-              <div className="bg-white rounded-2xl p-4 shadow-card flex items-center">
-                <Edit3 size={16} className="text-mixue-gray mr-3" />
-                <input 
-                  type="text" 
-                  placeholder="Add Note" 
-                  className="flex-1 text-sm focus:outline-none text-mixue-dark placeholder:text-mixue-gray"
-                />
-              </div>
+              )})}
             </div>
 
             {/* Order Summary */}

@@ -1,3 +1,14 @@
+import BobaSundaeImg from '../assets/Products/Boba_Sundae.png';
+import ChocolateSundaeImg from '../assets/Products/CCS.png';
+import StrawberrySundaeImg from '../assets/Products/CLS.png';
+import HawaiianTeaImg from '../assets/Products/HawaiianTea.jpg';
+import KiwiFruitTeaImg from '../assets/Products/KiwiFruitTea.jpg';
+import OatsMilkTeaImg from '../assets/Products/OatsMilkTea.jpg';
+import RedBeanMilkTeaImg from '../assets/Products/RedBeanMilkTea.jpg';
+import JasmineTeaImg from '../assets/Products/JasmineTea.jpg';
+import EarlTeaImg from '../assets/Products/EarlTea.jpg';
+import EAGITImg from '../assets/Products/EAGIT.png';
+
 export interface VariantOption {
   id: string;
   name: string;
@@ -51,77 +62,35 @@ export const categories: Category[] = [
   { id: 'smoothies', name: 'Smoothies', icon: '🥤' },
 ];
 
+const defaultIceAndSugarVariants = [
+  {
+    name: 'Sugar Level',
+    options: [
+      { id: 'normal', name: 'Normal', priceModifier: 0 },
+      { id: 'less', name: 'Less Sugar', priceModifier: 0 },
+      { id: 'extra', name: 'Extra Sugar', priceModifier: 0 },
+    ]
+  },
+  {
+    name: 'Ice Level',
+    options: [
+      { id: 'normal', name: 'Normal Ice', priceModifier: 0 },
+      { id: 'less', name: 'Less Ice', priceModifier: 0 },
+      { id: 'no-ice', name: 'No Ice', priceModifier: 0 },
+    ]
+  }
+];
+
 export const mockProducts: Product[] = [
   {
     id: '1',
-    name: 'Mixue Ice Cream',
-    price: 8000,
+    name: 'Boba Sundae',
+    price: 16000,
     rating: 4.9,
     reviewsCount: 1200,
-    image: 'https://images.unsplash.com/photo-1557142046-c704a3adf364?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'ice-cream',
-    description: 'Classic vanilla ice cream with smooth and creamy taste.',
-    badges: ['BEST SELLER'],
-    variants: [
-      {
-        name: 'Choose Cone',
-        options: [
-          { id: 'cup', name: 'Cup', priceModifier: 0 },
-          { id: 'cone', name: 'Cone', priceModifier: 0 },
-          { id: 'waffle', name: 'Waffle Cone', priceModifier: 2000 },
-        ]
-      }
-    ]
-  },
-  {
-    id: '2',
-    name: 'Strawberry Lucky Sundae',
-    price: 16000,
-    rating: 4.9,
-    reviewsCount: 850,
-    image: 'https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    image: BobaSundaeImg,
     category: 'sundae',
-    description: 'Delicious vanilla ice cream topped with real strawberry fruit jam.',
-    badges: ['PROMO'],
-    variants: [
-      {
-        name: 'Sugar Level',
-        options: [
-          { id: 'normal', name: 'Normal', priceModifier: 0 },
-          { id: 'less', name: 'Less Sugar', priceModifier: 0 },
-        ]
-      }
-    ]
-  },
-  {
-    id: '3',
-    name: 'Mango Sundae',
-    price: 16000,
-    rating: 4.8,
-    reviewsCount: 620,
-    image: 'https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'sundae',
-    description: 'Creamy vanilla ice cream mixed with fresh mango chunks and syrup.',
-  },
-  {
-    id: '4',
-    name: 'Chocolate Sundae',
-    price: 16000,
-    rating: 4.8,
-    reviewsCount: 930,
-    image: 'https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'sundae',
-    description: 'Classic vanilla ice cream generously drizzled with rich chocolate sauce.',
-  },
-  {
-    id: '5',
-    name: 'Brown Sugar Boba Milk Tea',
-    price: 16000,
-    rating: 4.9,
-    reviewsCount: 2100,
-    image: 'https://images.unsplash.com/photo-1558857563-b37103caab86?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'tea',
-    description: 'Signature milk tea with slow-cooked brown sugar boba.',
+    description: 'Signature vanilla ice cream topped with brown sugar boba.',
     badges: ['BEST SELLER'],
     variants: [
       {
@@ -131,34 +100,111 @@ export const mockProducts: Product[] = [
           { id: 'large', name: 'Large', priceModifier: 3000 },
         ]
       },
-      {
-        name: 'Sugar Level',
-        options: [
-          { id: 'normal', name: 'Normal', priceModifier: 0 },
-          { id: 'less', name: 'Less Sugar', priceModifier: 0 },
-        ]
-      }
+      ...defaultIceAndSugarVariants
     ]
   },
   {
+    id: '2',
+    name: 'Strawberry Lucky Sundae',
+    price: 16000,
+    rating: 4.8,
+    reviewsCount: 850,
+    image: StrawberrySundaeImg,
+    category: 'sundae',
+    description: 'Delicious vanilla ice cream topped with real strawberry fruit jam.',
+    badges: ['PROMO'],
+    variants: [...defaultIceAndSugarVariants]
+  },
+  {
+    id: '3',
+    name: 'Chocolate Lucky Sundae',
+    price: 16000,
+    rating: 4.8,
+    reviewsCount: 930,
+    image: ChocolateSundaeImg,
+    category: 'sundae',
+    description: 'Classic vanilla ice cream generously drizzled with rich chocolate sauce.',
+    variants: [...defaultIceAndSugarVariants]
+  },
+  {
+    id: '4',
+    name: 'Hawaiian Fruit Tea',
+    price: 22000,
+    rating: 4.9,
+    reviewsCount: 2100,
+    image: HawaiianTeaImg,
+    category: 'fruit-tea',
+    description: 'Refreshing fruit tea with fresh Hawaiian fruits.',
+    badges: ['BEST SELLER'],
+    variants: [...defaultIceAndSugarVariants]
+  },
+  {
+    id: '5',
+    name: 'Kiwi Fruit Tea',
+    price: 15000,
+    rating: 4.8,
+    reviewsCount: 1500,
+    image: KiwiFruitTeaImg,
+    category: 'fruit-tea',
+    description: 'Refreshing iced tea made with freshly squeezed kiwis.',
+    variants: [...defaultIceAndSugarVariants]
+  },
+  {
     id: '6',
-    name: 'Fresh Lemonade',
+    name: 'Oats Milk Tea',
+    price: 19000,
+    rating: 4.7,
+    reviewsCount: 1100,
+    image: OatsMilkTeaImg,
+    category: 'tea',
+    description: 'Creamy milk tea blended with healthy oats.',
+    badges: ['NEW'],
+    variants: [...defaultIceAndSugarVariants]
+  },
+  {
+    id: '7',
+    name: 'Red Bean Milk Tea',
+    price: 19000,
+    rating: 4.6,
+    reviewsCount: 950,
+    image: RedBeanMilkTeaImg,
+    category: 'tea',
+    description: 'Classic milk tea with sweet and soft red beans.',
+    variants: [...defaultIceAndSugarVariants]
+  },
+  {
+    id: '8',
+    name: 'Jasmine Tea',
+    price: 10000,
+    rating: 4.8,
+    reviewsCount: 3200,
+    image: JasmineTeaImg,
+    category: 'tea',
+    description: 'Traditional and refreshing jasmine green tea.',
+    variants: [...defaultIceAndSugarVariants]
+  },
+  {
+    id: '9',
+    name: 'Earl Grey Tea',
+    price: 10000,
+    rating: 4.7,
+    reviewsCount: 2800,
+    image: EarlTeaImg,
+    category: 'tea',
+    description: 'Classic Earl Grey tea with a distinct citrusy bergamot flavor.',
+    variants: [...defaultIceAndSugarVariants]
+  },
+  {
+    id: '10',
+    name: 'Earl Grey Ice Tea',
     price: 12000,
     rating: 4.8,
     reviewsCount: 1500,
-    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'fruit-tea',
-    description: 'Refreshing iced lemonade made with freshly squeezed lemons.',
-    variants: [
-      {
-        name: 'Ice Level',
-        options: [
-          { id: 'normal', name: 'Normal Ice', priceModifier: 0 },
-          { id: 'less', name: 'Less Ice', priceModifier: 0 },
-          { id: 'no-ice', name: 'No Ice', priceModifier: 0 },
-        ]
-      }
-    ]
+    image: EAGITImg,
+    category: 'tea',
+    description: 'Refreshing Earl Grey ice tea perfect for a hot day.',
+    badges: ['PROMO'],
+    variants: [...defaultIceAndSugarVariants]
   }
 ];
 

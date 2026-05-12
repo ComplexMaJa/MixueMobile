@@ -8,9 +8,10 @@ import type { CartItem, Product, VariantOption } from '../data/mockData';
 
 interface CartState {
   items: CartItem[];
-  addItem: (product: Product, variants: Record<string, VariantOption>, quantity: number) => void;
+  addItem: (product: Product, variants: Record<string, VariantOption>, quantity: number, note?: string) => void;
   removeItem: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
+  updateItem: (oldItemId: string, variants: Record<string, VariantOption>, note?: string) => void;
   clearCart: () => void;
   getSubtotal: () => number;
   getDeliveryFee: () => number;
@@ -22,11 +23,12 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       
-      addItem: (product, variants, quantity) => {
+      addItem: (product, variants, quantity, note) => {
         set((state) => {
-          // Generate a unique ID based on product and selected variants
+          // Generate a unique ID based on product, variants and note
           const variantKey = Object.values(variants).map(v => v.id).sort().join('-');
-          const itemId = `${product.id}-${variantKey}`;
+          const noteKey = note ? `-${note.replace(/\s+/g, '-').substring(0, 15)}` : '';
+          const itemId = `${product.id}-${variantKey}${noteKey}`;
           
           const existingItemIndex = state.items.findIndex(item => item.id === itemId);
           
@@ -49,6 +51,7 @@ export const useCartStore = create<CartState>()(
             basePrice: product.price,
             selectedVariants: variants,
             quantity,
+            note,
             totalItemPrice
           };
           
@@ -60,6 +63,53 @@ export const useCartStore = create<CartState>()(
         set((state) => ({
           items: state.items.filter(item => item.id !== itemId)
         }));
+      },
+      
+      updateItem: (oldItemId, variants, note) => {
+        set((state) => {
+          const itemToUpdate = state.items.find(i => i.id === oldItemId);
+          if (!itemToUpdate) return state;
+          
+          const variantKey = Object.values(variants).map(v => v.id).sort().join('-');
+          const noteKey = note ? `-${note.replace(/\s+/g, '-').substring(0, 15)}` : '';
+          const newItemId = `${itemToUpdate.productId}-${variantKey}${noteKey}`;
+          
+          let newItems = [...state.items];
+          
+          if (newItemId === oldItemId) {
+            // Same ID, just update variants/note inside
+            const itemIndex = newItems.findIndex(i => i.id === oldItemId);
+            newItems[itemIndex] = {
+              ...itemToUpdate,
+              selectedVariants: variants,
+              note
+            };
+            return { items: newItems };
+          }
+          
+          const existingTargetIndex = state.items.findIndex(i => i.id === newItemId);
+          
+          if (existingTargetIndex >= 0) {
+            // Target exists, merge quantities and remove old
+            newItems[existingTargetIndex].quantity += itemToUpdate.quantity;
+            newItems = newItems.filter(i => i.id !== oldItemId);
+          } else {
+            // Target doesn't exist, update old to new
+            const variantExtraPrice = Object.values(variants).reduce((sum, v) => sum + v.priceModifier, 0);
+            const totalItemPrice = itemToUpdate.basePrice + variantExtraPrice;
+            
+            const itemIndex = newItems.findIndex(i => i.id === oldItemId);
+            newItems[itemIndex] = {
+              ...itemToUpdate,
+              id: newItemId,
+              selectedVariants: variants,
+              note,
+              totalItemPrice
+            };
+          }
+          
+          return { items: newItems };
+        });
       },
       
       updateQuantity: (itemId, quantity) => {

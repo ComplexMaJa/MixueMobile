@@ -17,6 +17,11 @@ import { OrderTracking } from './pages/OrderTracking';
 import { Profile } from './pages/Profile';
 import { Orders } from './pages/Orders';
 import { Favorites } from './pages/Favorites';
+import { Addresses } from './pages/Addresses';
+import { PaymentMethods } from './pages/PaymentMethods';
+import { Promos } from './pages/Promos';
+import { Settings } from './pages/Settings';
+import { Support } from './pages/Support';
 
 function App() {
   return (
@@ -47,6 +52,11 @@ function App() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/success" element={<OrderSuccess />} />
         <Route path="/tracking/:id" element={<OrderTracking />} />
+        <Route path="/addresses" element={<Addresses />} />
+        <Route path="/payment-methods" element={<PaymentMethods />} />
+        <Route path="/promos" element={<Promos />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/support" element={<Support />} />
       </Routes>
     </BrowserRouter>
   );
