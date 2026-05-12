@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, Edit3, Edit2 } from 'lucide-react';
+import { ArrowLeft, Trash2, Edit2 } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { Button } from '../components/Button';
 import { Typography } from '../components/Typography';
